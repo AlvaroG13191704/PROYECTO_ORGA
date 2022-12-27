@@ -19,4 +19,6 @@ export interface ServerToClientEvent {
     'pool-sensor-toggle': () => void;
     'garage-door-passcode': (remainingAttempts: number) => void;
     'perimetral-alarm-passcode': (remainingAttempts: number) => void;
+    'warning': (message: string) => void;
+
 }
