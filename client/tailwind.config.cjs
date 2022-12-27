@@ -11,6 +11,11 @@ module.exports = {
           "0%": { opacity: 0 },
           "100%": { opacity: 1 },
         }
+      },
+      transitionDuration: {
+        "0": "0ms",
+        "2000": "2000ms",
+        "5000": "5000ms",
       }
     },
   },
