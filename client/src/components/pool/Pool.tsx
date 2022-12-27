@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export const Pool = () => {
   const [opacity, setOpacity] = useState(0);
@@ -28,6 +28,7 @@ export const Pool = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={emptyPool}
+          className="bg-red-600 hover:bg-red-500 py-2 rounded-md w-1/3 text-white text-xl"
         >
           Vaciar
         </motion.button>
@@ -35,6 +36,7 @@ export const Pool = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={fillPool}
+          className="bg-green-600 hover:bg-green-500 py-2 rounded-md w-1/3 text-white text-xl"
         >
           Llenar
         </motion.button>
