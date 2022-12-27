@@ -17,8 +17,8 @@ export class Server {
         this.serial = new SerialPort({
             baudRate: 9600,
             path: 'COM2'
-        });
-
+        }, (e) => console.log('Error', e));
+        
         this.middlewares();
         this.routes();
     }
