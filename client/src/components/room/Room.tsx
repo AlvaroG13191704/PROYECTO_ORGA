@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 
-export const Room = () => {
+interface RoomProps {
+  id: number;
+}
 
+export const Room = ({ id }: RoomProps) => {
   // HOOKS
   const [room, setRoom] = useState(false);
 
@@ -20,16 +24,24 @@ export const Room = () => {
   };
 
   return (
-    <div className={
-      (room ? "bg-gray-200" : "bg-gray-400") + " box-content h-48 w-48 border-4 m-auto my-5"
-    }
-    onClick={handleTurnOn}
-    >
-      <h1 className="text-2xl font-bold text-center">Room </h1>
-      {/* Light */}
-      <div className={
-        (room ? "bg-yellow-300 drop-shadow-xl shadow-yellow-500/100 blur-sm" : "bg-gray-500") + " rounded-full h-14 w-14 m-auto my-11"
-      }></div>
-    </div>
-  )
-}
+    <>
+      <motion.div
+        className={
+          (room ? "bg-gray-300" : "bg-gray-400") +
+          " box-content h-full w-full border-4"
+        }
+        onClick={handleTurnOn}
+      >
+        <h1 className="text-2xl font-bold text-center ">Room </h1>
+        {/* Light */}
+        <div
+          className={
+            (room
+              ? "bg-yellow-300 drop-shadow-xl shadow-yellow-500/100 blur-sm"
+              : "bg-gray-500") + " rounded-full h-14 w-14 m-auto my-11"
+          }
+        ></div>
+      </motion.div>
+    </>
+  );
+};

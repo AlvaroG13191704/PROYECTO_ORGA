@@ -1,13 +1,9 @@
-import { Garage, Pool, Room } from "./components";
+import { House } from "./components";
 
 export const App = () => {
   return (
-    <>
-      <div className="w-screen  h-screen flex justify-center align-middle">
-        <Pool />
-      </div>
-      <Garage />
-      <Room />
-    </>
+    <div className="w-screen h-screen p-5">
+      <House />
+    </div>
   );
 };

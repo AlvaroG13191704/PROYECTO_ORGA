@@ -13,7 +13,7 @@ export const Pool = () => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center items-center gap-5">
+    <div className="w-full h-full flex flex-col justify-center items-center gap-5">
       <div className="w-1/2 h-1/2 outline-dashed  outline-[12px] outline-gray-400 rounded-lg">
         <motion.div
           initial={{ opacity: opacity ? 1 : 0 }}
