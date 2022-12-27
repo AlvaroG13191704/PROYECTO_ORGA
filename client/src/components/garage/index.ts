@@ -1,1 +1,1 @@
-export { }
+export { Garage } from './Garage';
