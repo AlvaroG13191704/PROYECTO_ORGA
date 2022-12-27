@@ -1,27 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 import { motion } from "framer-motion";
+import { useSocket } from "../../hooks";
 
 interface RoomProps {
-  id: number;
+  roomNumber: number;
 }
 
-export const Room = ({ id }: RoomProps) => {
+export const Room = ({ roomNumber }: RoomProps) => {
   // HOOKS
   const [room, setRoom] = useState(false);
+  const { socket } = useSocket();
 
-  // FUNCTIONS
-  const handleTurnOn = () => {
-    setRoom(true);
-    console.log("Turn on light room 1");
-    setTimeout(() => {
-      handleTurnOff();
-    }, 2000);
-  };
+  const handleRoomLightToggle = (targetRoomNumber: number) => {
+    if (targetRoomNumber === roomNumber) {
+      setRoom(!room);
+    }
+  }
 
-  const handleTurnOff = () => {
-    setRoom(false);
-    console.log("Turn off light room 1");
-  };
+  useEffect(() => {
+
+    socket.on("room-light-toggle", handleRoomLightToggle);
+
+    return () => {
+      socket.off("room-light-toggle", handleRoomLightToggle);
+    };
+
+  }, []);
 
   return (
     <>
@@ -30,7 +34,6 @@ export const Room = ({ id }: RoomProps) => {
           (room ? "bg-gray-300" : "bg-gray-400") +
           " box-content h-full w-full border-4"
         }
-        onClick={handleTurnOn}
       >
         <h1 className="text-2xl font-bold text-center ">Room </h1>
         {/* Light */}
