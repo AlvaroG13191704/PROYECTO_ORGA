@@ -1,7 +1,9 @@
-import { House } from "./components/house/House";
+import { Pool } from "./components";
 
 export const App = () => {
   return (
-    <House />
+    <div className="w-screen  h-screen flex justify-center align-middle">
+      <Pool />
+    </div>
   );
 };
