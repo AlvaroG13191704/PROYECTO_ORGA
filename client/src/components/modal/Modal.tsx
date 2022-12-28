@@ -4,7 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 interface ModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>, password: string) => void;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>, password: string, reset: () => void) => void;
 }
 
 export const Modal = ({ isOpen, setIsOpen, handleSubmit }: ModalProps) => {
@@ -12,6 +12,11 @@ export const Modal = ({ isOpen, setIsOpen, handleSubmit }: ModalProps) => {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+  };
+
+  const reset = () => {
+    setPassword("");
+    setIsOpen(false);
   };
 
   return (
@@ -26,7 +31,7 @@ export const Modal = ({ isOpen, setIsOpen, handleSubmit }: ModalProps) => {
           <Dialog.Title className="text-lg font-semibold">
             Confirmar contraseña
           </Dialog.Title>
-          <form onSubmit={(e) => handleSubmit(e, password)} className="flex flex-col gap-2">
+          <form onSubmit={(e) => handleSubmit(e, password, reset)} className="flex flex-col gap-2">
             <label htmlFor="password">Contraseña</label>
             <input
               name="password"
