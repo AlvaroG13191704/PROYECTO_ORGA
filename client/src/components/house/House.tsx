@@ -1,7 +1,13 @@
-import { Garage, Pool, Room } from "../";
+import { Garage, Modal, Pool, Room } from "../";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 export const House = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
   return (
     <>
       <div
@@ -12,6 +18,7 @@ export const House = () => {
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
+            onClick={openModal}
             className="cursor-pointer w-32 h-20 mt-2 bg-orange-500 hover:bg-orange-400
            rounded-md text-white font-medium"
           >
@@ -31,6 +38,7 @@ export const House = () => {
           <Garage />
         </div>
       </div>
+      <Modal isOpen={isOpen} setIsOpen={setIsOpen} />
     </>
   );
 };
