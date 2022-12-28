@@ -57,7 +57,7 @@ export const House = () => {
       <div
         className={`
         border-2
-      border-red-500
+      border-blue-500
         w-full
         h-full
         grid
@@ -65,7 +65,7 @@ export const House = () => {
         grid-flow-col
         gap-4
         auto-cols-fr
-        ${isPerimetralAlarmOn ? 'animate-ping' : 'animate-none	'}
+        ${isPerimetralAlarmOn ? 'border-red-500' : 'border-blue-500'}
         `}
       >
         <div className="flex justify-center">

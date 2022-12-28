@@ -1,6 +1,6 @@
 import { CircuitRequest } from '../interfaces/circuit-requests';
 
-import { ReadlineParser, SerialPort } from 'serialport';
+import { ByteLengthParser, ReadlineParser, SerialPort } from 'serialport';
 import { Server, Socket } from 'socket.io'
 import { ClientToServerEvent, ServerToClientEvent, CircuitResponse } from '../interfaces';
 import { groupPasscode } from '../config';
@@ -19,7 +19,7 @@ export class AppRequestHandler {
         private readonly serialport: SerialPort<any>
     ) {
 
-        this.parser = this.serialport.pipe(new ReadlineParser());
+        this.parser = this.serialport.pipe(new ByteLengthParser({ length: 1 }));
 
         this.serialport.on('open', () => {
             console.log('Serialport open');
@@ -35,8 +35,11 @@ export class AppRequestHandler {
             console.log('User connected');
 
             // Recived data from serialport
-            this.parser.on('data', (data: CircuitRequest) => {
+            this.parser.on('data', (d: Blob) => {
+
+                const data = d.toString();
                 console.log("Recieved data from serialport: ", data);
+                console.log(typeof data);
 
                 switch (data) {
                     case '1':
