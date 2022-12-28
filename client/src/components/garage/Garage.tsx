@@ -1,11 +1,12 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useSocket } from "../../hooks";
+import { Modal } from "../modal";
 
 export const Garage = () => {
   //HOOKS
   const [openGarage, setOpenGarage] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { socket } = useSocket();
-  const [passcode, setPasscode] = useState('');
 
   //FUNCTIONS
   const handleOpenGarage = (remainingAttempts: number, success: boolean) => {
@@ -19,21 +20,17 @@ export const Garage = () => {
       // close
       setTimeout(() => {
         setOpenGarage(false);
-      }, 5000);
+      }, 7000);
 
     }
 
   };
 
 
-  // TODO: implement passcode form on a modal
-
-  const handlePasscodeRequest = (event: FormEvent) => {
+  const handlePasscodeRequest = (event: FormEvent, passcode: string) => {
     event.preventDefault();
     socket.emit('garage-door-open', passcode);
-    setPasscode('');
   }
-
 
   useEffect(() => {
 
@@ -44,8 +41,6 @@ export const Garage = () => {
     }
   }, [])
 
-
-
   return (
     <div className="bg-gray-300 box-content border-2  m-auto my-5">
       <h1 className="text-2xl font-bold text-center">Garage</h1>
@@ -53,6 +48,7 @@ export const Garage = () => {
       <div className="flex justify-center">
         <button
           className="bg-green-600 hover:bg-green-500 text-white font-bold m-2 py-2 px-4 rounded shadow-lg shadow-green-500/50"
+          onClick={() => setIsOpen(true)}
         >
           Open Garage
         </button>
@@ -66,6 +62,7 @@ export const Garage = () => {
           " w-4/4 mt-56 h-3 bg-black"
         }
       ></div>
+      <Modal isOpen={isOpen} setIsOpen={setIsOpen} handleSubmit={handlePasscodeRequest} />
     </div>
   );
 };

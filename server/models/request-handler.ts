@@ -143,7 +143,7 @@ export class AppRequestHandler {
 
                     this.reamainingPerimetralAlarmAttempts--;
 
-                    socket.emit('garage-door-passcode', this.reamainingPerimetralAlarmAttempts, false);
+                    socket.emit('perimetral-alarm-passcode', this.reamainingPerimetralAlarmAttempts, false);
                     console.log('Contraseña incorrecta, intentos restantes: ', this.reamainingPerimetralAlarmAttempts, '')
 
                     if (this.reamainingPerimetralAlarmAttempts === 0) {
@@ -157,7 +157,7 @@ export class AppRequestHandler {
                 }
 
                 this.reamainingPerimetralAlarmAttempts = 3;
-                socket.emit('garage-door-passcode', this.reamainingPerimetralAlarmAttempts, true);
+                socket.emit('perimetral-alarm-passcode', this.reamainingPerimetralAlarmAttempts, true);
                 this.serialport.write(CircuitResponse.PerimetralAlarmDeactivated);
                 console.log('Contraseña correcta, desactivando alarma')
 
