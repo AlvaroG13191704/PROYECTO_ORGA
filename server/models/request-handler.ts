@@ -66,6 +66,13 @@ export class AppRequestHandler {
                     case '11':
                         console.log('Sensor de la piscina cambió vacio/lleno por el circuito')
                         socket.emit('pool-sensor-toggle');
+
+                        if (this.poolState === 'drained') {
+                            this.poolState = 'fullfilled';
+                        } else {
+                            this.poolState = 'drained';
+                        }
+
                         break;
                 }
 
