@@ -26,7 +26,11 @@ export class Server {
     this.port = process.env.PORT || "8000";
     this.server = createServer(this.app);
     this.serial = new SerialPort(serialPortOptions, (e) => console.log(e))
-    this.io = new WebSocketServer<ClientToServerEvent, ServerToClientEvent>(this.server)
+    this.io = new WebSocketServer<ClientToServerEvent, ServerToClientEvent>(this.server, {
+      cors: {
+        origin: "*",
+      }
+    })
 
     this.middlewares();
     this.routes();

@@ -5,14 +5,13 @@ import { Server, Socket } from 'socket.io'
 import { ClientToServerEvent, ServerToClientEvent, CircuitResponse } from '../interfaces';
 import { groupPasscode } from '../config';
 
-type poolState = 'fullfilled' | 'drained'
 
 export class AppRequestHandler {
 
     private parser;
     private reamainingPerimetralAlarmAttempts = 3;
     private reamainingGarageDoorAttempts = 3;
-    private poolState: poolState = 'drained';
+    private isPoolEmpty = true;
 
     constructor(
         private readonly io: Server<ClientToServerEvent, ServerToClientEvent>,
@@ -37,9 +36,8 @@ export class AppRequestHandler {
             // Recived data from serialport
             this.parser.on('data', (d: Blob) => {
 
-                const data = d.toString();
-                console.log("Recieved data from serialport: ", data);
-                console.log(typeof data);
+                const data = d.toString() as CircuitRequest;
+                console.log("Recieved data from serialport: ", d, " -> ", data);
 
                 switch (data) {
                     case '1':
@@ -62,20 +60,14 @@ export class AppRequestHandler {
                         console.log('Luz del cuarto 3 encendida/apagada por el circuito')
                         socket.emit('room-light-toggle', 3);
                         break;
-                    case '10':
+                    case 'a':
                         console.log('Luz del cuarto 4 encendida/apagada por el circuito')
                         socket.emit('room-light-toggle', 4);
                         break;
-                    case '11':
-                        console.log('Sensor de la piscina cambió vacio/lleno por el circuito')
-                        socket.emit('pool-sensor-toggle');
+                    case 'b':
+                        this.isPoolEmpty = !this.isPoolEmpty;
 
-                        if (this.poolState === 'drained') {
-                            this.poolState = 'fullfilled';
-                        } else {
-                            this.poolState = 'drained';
-                        }
-
+                        socket.emit('pool-sensor-toggle', this.isPoolEmpty);
                         break;
                 }
 
@@ -86,7 +78,7 @@ export class AppRequestHandler {
 
             socket.on('drain-pool', () => {
                 console.log('Solictud de vaciar piscina recibida')
-                if (this.poolState === 'drained') {
+                if (this.isPoolEmpty === true) {
                     console.log('La piscina ya se encuentra vacía')
                     socket.emit('warning', 'La pisicina ya se encuentra vacía');
                     return;
@@ -97,7 +89,7 @@ export class AppRequestHandler {
 
             socket.on('fill-pool', () => {
                 console.log('Solictud de llenar piscina recibida')
-                if (this.poolState === 'fullfilled') {
+                if (this.isPoolEmpty === false) {
                     console.log('La piscina ya se encuentra llena')
                     socket.emit('warning', 'La pisicina ya se encuentra llena');
                     return;

@@ -6,15 +6,15 @@ export type CircuitRequest =
     | '7' // Room 1 light toggle
     | '8' // Room 2 light toggle
     | '9' // Room 3 light toggle
-    | '10' // Room 4 light toggle
-    | '11' // Pool sensor toggle
+    | 'a' // Room 4 light toggle
+    | 'b' // Pool sensor toggle
 
 export enum CircuitResponse {
     PerimetralAlarmDeactivated = '2',
     AudibleAlarmActivated = '3',
     GarageDoorOpen = '5',
     GarageDoorClose = '6',
-    TogglePoolPump = '12'
+    TogglePoolPump = 'c'
 }
 
 

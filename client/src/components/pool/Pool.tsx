@@ -25,11 +25,11 @@ export const Pool = () => {
     socket.emit("fill-pool");
   };
 
-  const handlePoolPumpToggle = () => {
-    if (isPoolEmpty) {
-      fillPool();
-    } else {
+  const handlePoolPumpToggle = (isEmpty: boolean) => {
+    if (isEmpty) {
       emptyPool();
+    } else {
+      fillPool();
     }
   }
 
