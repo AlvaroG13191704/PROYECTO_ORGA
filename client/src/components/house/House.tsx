@@ -26,10 +26,10 @@ export const House = () => {
           </motion.button>
         </div>
         <div className="grid grid-rows-2 grid-flow-col gap-4 auto-cols-fr p-5">
-          <Room id={1} />
-          <Room id={2} />
-          <Room id={3} />
-          <Room id={4} />
+          <Room roomNumber={1} />
+          <Room roomNumber={2} />
+          <Room roomNumber={3} />
+          <Room roomNumber={4} />
         </div>
         <div className="auto">
           <Pool />

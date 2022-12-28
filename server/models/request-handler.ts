@@ -5,9 +5,14 @@ import { Server, Socket } from 'socket.io'
 import { ClientToServerEvent, ServerToClientEvent, CircuitResponse } from '../interfaces';
 import { groupPasscode } from '../config';
 
+type poolState = 'fullfilled' | 'drained'
+
 export class AppRequestHandler {
 
     private parser;
+    private reamainingPerimetralAlarmAttempts = 3;
+    private reamainingGarageDoorAttempts = 3;
+    private poolState: poolState = 'drained';
 
     constructor(
         private readonly io: Server<ClientToServerEvent, ServerToClientEvent>,
@@ -35,24 +40,31 @@ export class AppRequestHandler {
 
                 switch (data) {
                     case '1':
+                        console.log('Alarma perimetral activada por el circuito')
                         socket.emit('perimetral-alarm-fired');
                         break;
                     case '4':
+                        console.log('Alarma perimetral reestablecida por el circuito')
                         socket.emit('perimetral-alarm-reset');
                         break;
                     case '7':
-                        socket.emit('room-1-light-toggle');
+                        console.log('Luz del cuarto 1 encendida/apagada por el circuito')
+                        socket.emit('room-light-toggle', 1);
                         break;
                     case '8':
-                        socket.emit('room-2-light-toggle');
+                        console.log('Luz del cuarto 2 encendida/apagada por el circuito')
+                        socket.emit('room-light-toggle', 2);
                         break;
                     case '9':
-                        socket.emit('room-3-light-toggle');
+                        console.log('Luz del cuarto 3 encendida/apagada por el circuito')
+                        socket.emit('room-light-toggle', 3);
                         break;
                     case '10':
-                        socket.emit('room-4-light-toggle');
+                        console.log('Luz del cuarto 4 encendida/apagada por el circuito')
+                        socket.emit('room-light-toggle', 4);
                         break;
                     case '11':
+                        console.log('Sensor de la piscina cambió vacio/lleno por el circuito')
                         socket.emit('pool-sensor-toggle');
                         break;
                 }
@@ -63,51 +75,84 @@ export class AppRequestHandler {
             // Recived data from websocket client
 
             socket.on('drain-pool', () => {
-                // TODO: check pool actual state
-                // this.serialport.write(CircuitResponse.TogglePoolPump);
+                console.log('Solictud de vaciar piscina recibida')
+                if (this.poolState === 'drained') {
+                    console.log('La piscina ya se encuentra vacía')
+                    socket.emit('warning', 'La pisicina ya se encuentra vacía');
+                    return;
+                }
+                console.log('Drenando piscina, enviando comando al circuito')
+                this.serialport.write(CircuitResponse.TogglePoolPump);
             })
 
             socket.on('fill-pool', () => {
-                // TODO: check pool actual state
-                // this.serialport.write(CircuitResponse.TogglePoolPump);
+                console.log('Solictud de llenar piscina recibida')
+                if (this.poolState === 'fullfilled') {
+                    console.log('La piscina ya se encuentra llena')
+                    socket.emit('warning', 'La pisicina ya se encuentra llena');
+                    return;
+                }
+                console.log('Llenando piscina, enviando comando al circuito')
+                this.serialport.write(CircuitResponse.TogglePoolPump);
             })
 
             socket.on('garage-door-open', (code: string) => {
+                console.log('Solicitud de abrir puerta recibida')
 
                 if (code !== groupPasscode) {
-                    // TODO: check remaining attempts
-                    const remainingAttempts = 0;
-                    socket.emit('garage-door-passcode', remainingAttempts);
+                    this.reamainingGarageDoorAttempts--;
 
-                    if (remainingAttempts === 0) {
+                    socket.emit('garage-door-passcode', this.reamainingGarageDoorAttempts, false);
+                    console.log('Contraseña incorrecta, intentos restantes: ', this.reamainingGarageDoorAttempts, '')
+
+                    if (this.reamainingGarageDoorAttempts === 0) {
                         this.serialport.write(CircuitResponse.AudibleAlarmActivated);
+                        socket.emit('warning', 'Se ha activado la alarma audible por intentos fallidos');
+                        this.reamainingGarageDoorAttempts = 3;
+                        console.log('3 Intentos fallidos, activando alarma audible')
                     }
 
                     return;
                 }
 
+                this.reamainingGarageDoorAttempts = 3;
+                socket.emit('garage-door-passcode', this.reamainingGarageDoorAttempts, true);
                 this.serialport.write(CircuitResponse.GarageDoorOpen);
+                console.log('Contraseña correcta, abriendo puerta')
 
                 setTimeout(() => {
                     this.serialport.write(CircuitResponse.GarageDoorClose);
+                    console.log('Cerrando puerta')
                 }, 5000);
 
             })
 
             socket.on('perimetral-alarm-deactivate', (code: string) => {
-                if (code !== groupPasscode) {
-                    // TODO: check remaining attempts
-                    const remainingAttempts = 0;
-                    socket.emit('garage-door-passcode', remainingAttempts);
+                console.log('Solicitud de desactivar alarma recibida')
 
-                    if (remainingAttempts === 0) {
+                // ? check if the alarm is already deactivated
+
+                if (code !== groupPasscode) {
+
+                    this.reamainingPerimetralAlarmAttempts--;
+
+                    socket.emit('garage-door-passcode', this.reamainingPerimetralAlarmAttempts, false);
+                    console.log('Contraseña incorrecta, intentos restantes: ', this.reamainingPerimetralAlarmAttempts, '')
+
+                    if (this.reamainingPerimetralAlarmAttempts === 0) {
                         this.serialport.write(CircuitResponse.AudibleAlarmActivated);
+                        socket.emit('warning', 'Se ha activado la alarma audible por intentos fallidos');
+                        this.reamainingPerimetralAlarmAttempts = 3;
+                        console.log('3 Intentos fallidos, activando alarma audible')
                     }
 
                     return;
                 }
 
+                this.reamainingPerimetralAlarmAttempts = 3;
+                socket.emit('garage-door-passcode', this.reamainingPerimetralAlarmAttempts, true);
                 this.serialport.write(CircuitResponse.PerimetralAlarmDeactivated);
+                console.log('Contraseña correcta, desactivando alarma')
 
             })
 
