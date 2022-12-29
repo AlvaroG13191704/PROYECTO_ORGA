@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useSocket } from "../../hooks";
 import { Modal } from "../modal";
+import { toast } from 'react-hot-toast';
 
 export const Garage = () => {
   //HOOKS
@@ -19,17 +20,22 @@ export const Garage = () => {
       console.log("Garage is open");
       // close
       setTimeout(() => {
+        toast(`Cerrando garage!`);
         setOpenGarage(false);
       }, 7000);
 
+      toast(`Abriendo garage!`);
+    } else {
+      toast(`Intentos restantes: ${remainingAttempts}`);
     }
 
   };
 
 
-  const handlePasscodeRequest = (event: FormEvent, passcode: string) => {
+  const handlePasscodeRequest = (event: FormEvent, passcode: string, reset: () => void) => {
     event.preventDefault();
     socket.emit('garage-door-open', passcode);
+    reset();
   }
 
   useEffect(() => {

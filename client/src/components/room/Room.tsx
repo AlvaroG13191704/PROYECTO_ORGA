@@ -13,7 +13,9 @@ export const Room = ({ roomNumber }: RoomProps) => {
 
   const handleRoomLightToggle = (targetRoomNumber: number) => {
     if (targetRoomNumber === roomNumber) {
-      setRoom(!room);
+      setRoom((prevState) => {
+        return !prevState
+      });
     }
   }
 

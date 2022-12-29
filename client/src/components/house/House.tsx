@@ -1,5 +1,6 @@
 import { Garage, Modal, Pool, Room } from "../";
 import { motion } from "framer-motion";
+import { toast } from 'react-hot-toast'
 import { useState, useEffect } from 'react';
 import { useSocket } from '../../hooks/useSocket';
 
@@ -12,13 +13,16 @@ export const House = () => {
     setIsOpen(true);
   };
 
-  const handleResetPerimetralAlarm = (e: React.FormEvent<HTMLFormElement>, password: string) => {
+  const handleResetPerimetralAlarm = (e: React.FormEvent<HTMLFormElement>, password: string, reset: () => void) => {
     e.preventDefault();
     socket.emit('perimetral-alarm-deactivate', password)
+    reset();
   }
 
   const handleWarning = (message: string) => {
-    console.log(message);
+    toast(message, {
+      icon: '🚨',
+    });
   }
 
   const firePerimetralAlarm = () => {
@@ -31,9 +35,9 @@ export const House = () => {
 
   const handlePasscodeResponse = (remainingAttempts: number, success: boolean) => {
     if (success) {
-      console.log('Perimetral alarm deactivated');
+      toast(`Alarma perimetral desactivada exitosamente!`);
     } else {
-      console.log(`Remaining attempts: ${remainingAttempts}`);
+      toast(`Intentos restantes: ${remainingAttempts}`);
     }
   }
 
