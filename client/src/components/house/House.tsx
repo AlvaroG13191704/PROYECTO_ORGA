@@ -62,6 +62,7 @@ export const House = () => {
         className={`
         border-2
       border-blue-500
+      rounded-md
         w-full
         h-full
         grid
@@ -69,10 +70,10 @@ export const House = () => {
         grid-flow-col
         gap-4
         auto-cols-fr
-        ${isPerimetralAlarmOn ? 'border-red-500' : 'border-blue-500'}
+        ${isPerimetralAlarmOn ? 'border-red-500 border-4 transition-all duration-300' : 'border-blue-500'}
         `}
       >
-        <div className="flex justify-center">
+        <div className="flex justify-center items-center">
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -80,7 +81,7 @@ export const House = () => {
             className="cursor-pointer w-32 h-20 mt-2 bg-orange-500 hover:bg-orange-400
            rounded-md text-white font-medium"
           >
-            Desactivar
+            Desactivar alarma
           </motion.button>
         </div>
         <div className="grid grid-rows-2 grid-flow-col gap-4 auto-cols-fr p-5">
