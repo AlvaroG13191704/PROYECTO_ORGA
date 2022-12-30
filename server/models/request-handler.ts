@@ -154,6 +154,7 @@ export class AppRequestHandler {
                 this.reamainingPerimetralAlarmAttempts = 3;
                 socket.emit('perimetral-alarm-passcode', this.reamainingPerimetralAlarmAttempts, true);
                 this.serialport.write(CircuitResponse.PerimetralAlarmDeactivated);
+                socket.emit('perimetral-alarm-reset');
                 console.log('Contraseña correcta, desactivando alarma')
 
             })
