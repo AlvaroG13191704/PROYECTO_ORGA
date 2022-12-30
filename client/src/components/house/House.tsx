@@ -85,8 +85,8 @@ export const House = () => {
         </div>
         <div className="grid grid-rows-2 grid-flow-col gap-4 auto-cols-fr p-5">
           <Room roomNumber={1} />
-          <Room roomNumber={2} />
           <Room roomNumber={3} />
+          <Room roomNumber={2} />
           <Room roomNumber={4} />
         </div>
         <div className="auto">
